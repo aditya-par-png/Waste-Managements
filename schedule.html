@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waste Management - Schedule</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  
+  <nav class="bg-green-600 p-4 flex justify-around text-white">
+    <a href="home.html" class="hover:underline">Home</a>
+    <a href="profile.html" class="hover:underline">Profile</a>
+    <a href="schedule.html" class="hover:underline">Schedule</a>
+    <a href="help.html" class="hover:underline">Help</a>
+  </nav>
+
+  <header class="bg-green-700 text-white text-center py-6 text-xl font-bold">
+    Weekly Schedule
+  </header>
+
+  <section class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md mt-6">
+    <h2 class="text-lg font-semibold">Your Scheduled Pickups</h2>
+    <div id="schedule-list" class="mt-4 space-y-3">
+      <!-- Dynamically added schedule items will appear here -->
+    </div>
+  </section>
+
+  <script>
+    // Load all schedule data from localStorage
+    window.onload = function() {
+      const scheduleList = JSON.parse(localStorage.getItem('scheduleList')) || [];
+      const scheduleContainer = document.getElementById("schedule-list");
+
+      // Loop through all stored requests and display them
+      scheduleList.forEach((request) => {
+        const scheduleItem = document.createElement("div");
+        scheduleItem.classList.add("p-4", "bg-green-100", "rounded", "shadow");
+        scheduleItem.innerHTML = `
+          <p><strong>${new Date(request.date).toDateString()}</strong></p>
+          <p>Waste Type: ${request.wasteType}</p>
+          <p>Time: ${request.time}</p>
+          <p>Route: ${request.route}</p> <!-- Display the route here -->
+          <p class="text-green-700 font-semibold">Status: Scheduled</p>
+        `;
+        scheduleContainer.appendChild(scheduleItem);
+      });
+    };
+  </script>
+
+</body>
+</html>

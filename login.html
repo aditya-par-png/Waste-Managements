@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Waste Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 90%;
+      max-width: 900px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .login-section {
+      width: 45%;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .login-section h3 {
+      text-align: center;
+      color: #333;
+    }
+    .input-group {
+      margin: 10px 0;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #45a049;
+    }
+    .error {
+      color: red;
+      text-align: center;
+    }
+    .links {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .links a {
+      color: #4CAF50;
+      text-decoration: none;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- User Login Section -->
+  <div class="login-section">
+    <h3>User Login</h3>
+    <form id="userLoginForm">
+      <div class="input-group">
+        <label for="userUsername">Username</label>
+        <input type="text" id="userUsername" required>
+      </div>
+      <div class="input-group">
+        <label for="userPassword">Password</label>
+        <input type="password" id="userPassword" required>
+      </div>
+      <button type="submit" class="button">Login as User</button>
+      <p class="error" id="userErrorMessage"></p>
+      <div class="links">
+        <a href="user_signup.html">Create an Account</a> | <a href="#">Forgot Password?</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Admin Login Section -->
+  <div class="login-section">
+    <h3>Admin Login</h3>
+    <form id="adminLoginForm">
+      <div class="input-group">
+        <label for="adminUsername">Username</label>
+        <input type="text" id="adminUsername" required>
+      </div>
+      <div class="input-group">
+        <label for="adminPassword">Password</label>
+        <input type="password" id="adminPassword" required>
+      </div>
+      <button type="submit" class="button">Login as Admin</button>
+      <p class="error" id="adminErrorMessage"></p>
+      <div class="links">
+        <a href="admin_signup.html">Create an Account</a> | <a href="#">Forgot Password?</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.getElementById("adminLoginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById("adminUsername").value;
+    const password = document.getElementById("adminPassword").value;
+    const errorMessage = document.getElementById("adminErrorMessage");
+
+    // Retrieve stored admin credentials from localStorage
+    const storedAdmin = JSON.parse(localStorage.getItem("admin"));
+
+    if (storedAdmin && username === storedAdmin.username && password === storedAdmin.password) {
+      window.location.href = "homeadmin.html";
+    } else {
+      errorMessage.textContent = "Invalid credentials for Admin.";
+    }
+  });
+</script>
+
+<script>
+  document.getElementById("userLoginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const username = document.getElementById("userUsername").value;
+    const password = document.getElementById("userPassword").value;
+    const errorMessage = document.getElementById("userErrorMessage");
+
+    // Retrieve stored user credentials from localStorage
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (storedUser && username === storedUser.username && password === storedUser.password) {
+      window.location.href = "home.html";
+    } else {
+      errorMessage.textContent = "Invalid credentials for User.";
+    }
+  });
+</script>
+
+
+
+</body>
+</html>
