@@ -1,57 +1,77 @@
 <?php
 session_start();
+
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "waste_management_system";
 
+// Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Helper function to sanitize input
+function sanitize($data) {
+    return htmlspecialchars(stripslashes(trim($data)));
+}
+
 // User Login
 if (isset($_POST['userLogin'])) {
-    $userUsername = $_POST['userUsername'];
-    $userPassword = $_POST['userPassword'];
+    $userUsername = sanitize($_POST['userUsername']);
+    $userPassword = $_POST['userPassword']; // Password should not be sanitized to preserve characters
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE full_name = ? OR email = ?");
+    $stmt = $conn->prepare("SELECT id, full_name, email, password FROM users WHERE full_name = ? OR email = ?");
     $stmt->bind_param("ss", $userUsername, $userUsername);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-    // If you store hashed passwords, use password_verify()
-    if ($user && $userPassword == $user['password']) {
-        $_SESSION['user_id'] = $user['id'];
-        header("Location: home.html");
-        exit();
+    if ($user) {
+        // Verify hashed password
+        if (password_verify($userPassword, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_name'] = $user['full_name'];
+            header("Location: home.html");
+            exit();
+        } else {
+            $error = "Invalid password for User.";
+        }
     } else {
-        echo "<script>alert('Invalid credentials for User.'); window.location.href='login.html';</script>";
-        exit();
+        $error = "User not found.";
     }
+
+    header("Location: login.html?user_error=" . urlencode($error));
+    exit();
 }
 
 // Admin Login
 if (isset($_POST['adminLogin'])) {
-    $adminUsername = $_POST['adminUsername'];
+    $adminUsername = sanitize($_POST['adminUsername']);
     $adminPassword = $_POST['adminPassword'];
 
-    $stmt = $conn->prepare("SELECT * FROM admins WHERE username = ? OR email = ?");
+    $stmt = $conn->prepare("SELECT id, username, email, password FROM admins WHERE username = ? OR email = ?");
     $stmt->bind_param("ss", $adminUsername, $adminUsername);
     $stmt->execute();
     $result = $stmt->get_result();
     $admin = $result->fetch_assoc();
 
-    // If you store hashed passwords, use password_verify()
-    if ($admin && $adminPassword == $admin['password']) {
-        $_SESSION['admin_id'] = $admin['id'];
-        header("Location: homeadmin.html");
-        exit();
+    if ($admin) {
+        if (password_verify($adminPassword, $admin['password'])) {
+            $_SESSION['admin_id'] = $admin['id'];
+            $_SESSION['admin_name'] = $admin['username'];
+            header("Location: homeadmin.html");
+            exit();
+        } else {
+            $error = "Invalid password for Admin.";
+        }
     } else {
-        echo "<script>alert('Invalid credentials for Admin.'); window.location.href='login.html';</script>";
-        exit();
+        $error = "Admin not found.";
     }
+
+    header("Location: login.html?admin_error=" . urlencode($error));
+    exit();
 }
 
 $conn->close();
