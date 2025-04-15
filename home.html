@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,26 +23,28 @@
 
   <section class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md mt-6">
     <h2 class="text-lg font-semibold">Request for Pickup</h2>
-    <form class="mt-4">
+    <form id="pickup-form" class="mt-4" action="index.php" method="POST">
       <label class="block">Type of Waste</label>
-      <select id="waste-type" class="w-full p-2 border rounded">
+      <select id="waste-type" name="waste-type" class="w-full p-2 border rounded">
         <option>Biodegradable</option>
         <option>Non-Biodegradable</option>
         <option>Recyclable</option>
       </select>
       <label class="block mt-3">Preferred Pickup Date</label>
-      <input type="date" id="pickup-date" class="w-full p-2 border rounded">
+      <input type="date" id="pickup-date" name="pickup-date" class="w-full p-2 border rounded">
       <label class="block mt-3">Preferred Pickup Time</label>
-      <input type="time" id="pickup-time" class="w-full p-2 border rounded">
+      <input type="time" id="pickup-time" name="pickup-time" class="w-full p-2 border rounded">
       
       <!-- New Route Input for the Pickup Request -->
       <label class="block mt-3">Pickup Location (Route)</label>
-      <input type="text" id="pickup-route" class="w-full p-2 border rounded" placeholder="Enter Pickup Location">
+      <input type="text" id="pickup-route" name="pickup-route" class="w-full p-2 border rounded" placeholder="Enter Pickup Location">
       
+      <!-- Button triggers JavaScript submission -->
       <button type="button" class="w-full bg-green-600 text-white mt-4 p-2 rounded" onclick="submitPickup()">Request Pickup</button>
     </form>
   </section>
 
+  <!-- JavaScript Function -->
   <script>
     function submitPickup() {
       const wasteType = document.getElementById("waste-type").value;
@@ -54,19 +57,12 @@
         return;
       }
 
-      const pickupRequest = {
-        wasteType: wasteType,
-        date: date,
-        time: time,
-        route: route, // Store the route entered by the user
-      };
-
-      const scheduleList = JSON.parse(localStorage.getItem('scheduleList')) || [];
-      scheduleList.push(pickupRequest);
-      localStorage.setItem('scheduleList', JSON.stringify(scheduleList));
-
-      alert("Your pickup request has been submitted successfully!");
+      // Submit the form programmatically
+      document.getElementById("pickup-form").submit();
     }
   </script>
+
 </body>
 </html>
+
+
