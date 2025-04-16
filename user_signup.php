@@ -1,9 +1,12 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up - Waste Management</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>User Sign Up - Waste Management</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -46,7 +49,7 @@
       width: 100%;
       padding: 10px;
       font-size: 16px;
-      background-color: #4CAF50;
+      background-color: #4caf50;
       color: white;
       border: none;
       border-radius: 5px;
@@ -60,11 +63,22 @@
       margin-top: 10px;
     }
     .links a {
-      color: #4CAF50;
+      color: #4caf50;
       text-decoration: none;
     }
     .links a:hover {
       text-decoration: underline;
+    }
+    .message {
+      text-align: center;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
     }
   </style>
 </head>
@@ -72,41 +86,39 @@
 
 <div class="container">
   <h2>User Sign Up</h2>
-  <form id="signUpForm">
+
+  <!-- Display error or success messages -->
+  <?php
+  if (isset($_SESSION['signup_error'])) {
+      echo '<p class="message error">' . htmlspecialchars($_SESSION['signup_error']) . '</p>';
+      unset($_SESSION['signup_error']);
+  }
+  if (isset($_SESSION['signup_success'])) {
+      echo '<p class="message success">' . htmlspecialchars($_SESSION['signup_success']) . '</p>';
+      unset($_SESSION['signup_success']);
+  }
+  ?>
+
+  <form id="signUpForm" action="user_signup_process.php" method="POST">
     <div class="input-group">
       <label for="username">Username</label>
-      <input type="text" id="username" required>
+      <input type="text" id="username" name="username" required />
     </div>
     <div class="input-group">
       <label for="email">Email</label>
-      <input type="email" id="email" required>
+      <input type="email" id="email" name="email" required />
     </div>
     <div class="input-group">
       <label for="password">Password</label>
-      <input type="password" id="password" required>
+      <input type="password" id="password" name="password" required />
     </div>
     <button type="submit" class="button">Sign Up</button>
   </form>
+
   <div class="links">
-    <p>Already have an account? <a href="login.html">Login here</a></p>
+    <p>Already have an account? <a href="login.php">Login here</a></p>
   </div>
 </div>
-
-<script>
-  document.getElementById("signUpForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById("username").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    const user = { username, email, password };
-    
-    localStorage.setItem("user", JSON.stringify(user)); // Save user data
-    alert("Signup successful! Please log in.");
-    window.location.href = "login.html"; // Redirect to login page
-  });
-</script>
 
 </body>
 </html>
