@@ -54,6 +54,27 @@ CREATE TABLE IF NOT EXISTS routes (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )") or die($conn->error);
 
+// Insert Kathmandu routes
+$kathmandu_routes = array(
+    array("route_name" => "Ring Road", "area_covered" => "All areas along the Ring Road"),
+    array("route_name" => "Thamel", "area_covered" => "Thamel area"),
+    array("route_name" => "Patan", "area_covered" => "Patan area"),
+    array("route_name" => "Bhaktapur", "area_covered" => "Bhaktapur area")
+);
+
+foreach ($kathmandu_routes as $route) {
+    $route_name = $conn->real_escape_string($route['route_name']);
+    $area_covered = $conn->real_escape_string($route['area_covered']);
+
+    $sql = "INSERT INTO routes (route_name, area_covered) VALUES ('$route_name', '$area_covered')";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "Route '$route_name' added successfully.<br>";
+    } else {
+        echo "Error adding route '$route_name': " . $conn->error;
+    }
+}
+
 // DRIVERS table
 $conn->query("
 CREATE TABLE IF NOT EXISTS drivers (
@@ -77,11 +98,14 @@ CREATE TABLE IF NOT EXISTS collection_schedule (
     driver_id INT,
     route_id INT,
     created_by_admin_id INT,
+    user_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (driver_id) REFERENCES drivers(id),
     FOREIGN KEY (route_id) REFERENCES routes(id),
-    FOREIGN KEY (created_by_admin_id) REFERENCES admins(id)
+    FOREIGN KEY (created_by_admin_id) REFERENCES admins(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 )") or die($conn->error);
+
 
 // RECYCLING TIPS table
 $conn->query("
