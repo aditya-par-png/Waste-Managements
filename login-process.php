@@ -17,7 +17,7 @@ function sanitize($data) {
     return htmlspecialchars(stripslashes(trim($data)));
 }
 
-// User Login
+// User Login Handling
 if (isset($_POST['userLogin'])) {
     $userUsername = sanitize($_POST['userUsername']);
     $userPassword = $_POST['userPassword']; // Password should not be sanitized to preserve characters
@@ -28,25 +28,20 @@ if (isset($_POST['userLogin'])) {
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-    if ($user) {
-        // Verify hashed password
-        if (password_verify($userPassword, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['full_name'];
-            header("Location: home.html");
-            exit();
-        } else {
-            $error = "Invalid password for User.";
-        }
+    if ($user && password_verify($userPassword, $user['password'])) {
+        session_regenerate_id(true); // Prevent session fixation attacks
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_name'] = $user['full_name'];
+        header("Location: home.html");
+        exit();
     } else {
-        $error = "User not found.";
+        $_SESSION['user_error'] = "Invalid username or password.";
+        header("Location: login.php");
+        exit();
     }
-
-    header("Location: login.html?user_error=" . urlencode($error));
-    exit();
 }
 
-// Admin Login
+// Admin Login Handling
 if (isset($_POST['adminLogin'])) {
     $adminUsername = sanitize($_POST['adminUsername']);
     $adminPassword = $_POST['adminPassword'];
@@ -57,22 +52,19 @@ if (isset($_POST['adminLogin'])) {
     $result = $stmt->get_result();
     $admin = $result->fetch_assoc();
 
-    if ($admin) {
-        if (password_verify($adminPassword, $admin['password'])) {
-            $_SESSION['admin_id'] = $admin['id'];
-            $_SESSION['admin_name'] = $admin['username'];
-            header("Location: homeadmin.html");
-            exit();
-        } else {
-            $error = "Invalid password for Admin.";
-        }
+    if ($admin && password_verify($adminPassword, $admin['password'])) {
+        session_regenerate_id(true); // Prevent session fixation attacks
+        $_SESSION['admin_id'] = $admin['id'];
+        $_SESSION['admin_name'] = $admin['username'];
+        header("Location: homeadmin.html");
+        exit();
     } else {
-        $error = "Admin not found.";
+        $_SESSION['admin_error'] = "Invalid username or password.";
+        header("Location: login.php");
+        exit();
     }
-
-    header("Location: login.html?admin_error=" . urlencode($error));
-    exit();
 }
 
 $conn->close();
 ?>
+
