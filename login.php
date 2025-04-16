@@ -1,3 +1,6 @@
+<?php
+session_start(); // Start the session to display error messages
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +54,7 @@
       width: 100%;
       padding: 10px;
       font-size: 16px;
-      background-color: #4CAF50;
+      background-color: #4caf50;
       color: white;
       border: none;
       border-radius: 5px;
@@ -69,7 +72,7 @@
       margin-top: 10px;
     }
     .links a {
-      color: #4CAF50;
+      color: #4caf50;
       text-decoration: none;
     }
     .links a:hover {
@@ -80,20 +83,31 @@
 <body>
 
 <div class="container">
+  
   <!-- User Login Section -->
   <div class="login-section">
     <h3>User Login</h3>
-    <form id="userLoginForm">
+    <form action="login_process.php" method="POST">
       <div class="input-group">
-        <label for="userUsername">Username</label>
-        <input type="text" id="userUsername" required>
+        <label for="userUsername">Username or Email</label>
+        <input type="text" id="userUsername" name="userUsername" required>
       </div>
       <div class="input-group">
         <label for="userPassword">Password</label>
-        <input type="password" id="userPassword" required>
+        <input type="password" id="userPassword" name="userPassword" required>
       </div>
-      <button type="submit" class="button">Login as User</button>
-      <p class="error" id="userErrorMessage"></p>
+      <button type="submit" class="button" name="userLogin">Login as User</button>
+      
+      <!-- Display User Login Error -->
+      <p class="error">
+        <?php
+          if (isset($_SESSION['user_error'])) {
+            echo htmlspecialchars($_SESSION['user_error']);
+            unset($_SESSION['user_error']); // Clear error after displaying
+          }
+        ?>
+      </p>
+
       <div class="links">
         <a href="user_signup.html">Create an Account</a> | <a href="#">Forgot Password?</a>
       </div>
@@ -103,63 +117,34 @@
   <!-- Admin Login Section -->
   <div class="login-section">
     <h3>Admin Login</h3>
-    <form id="adminLoginForm">
+    <form action="login_process.php" method="POST">
       <div class="input-group">
-        <label for="adminUsername">Username</label>
-        <input type="text" id="adminUsername" required>
+        <label for="adminUsername">Username or Email</label>
+        <input type="text" id="adminUsername" name="adminUsername" required>
       </div>
       <div class="input-group">
         <label for="adminPassword">Password</label>
-        <input type="password" id="adminPassword" required>
+        <input type="password" id="adminPassword" name="adminPassword" required>
       </div>
-      <button type="submit" class="button">Login as Admin</button>
-      <p class="error" id="adminErrorMessage"></p>
-      <div class="links">
-        <a href="admin_signup.html">Create an Account</a> | <a href="#">Forgot Password?</a>
-      </div>
-    </form>
-  </div>
+      <button type="submit" class="button" name="adminLogin">Login as Admin</button>
+
+       <!-- Display Admin Login Error -->
+       <p class="error">
+         <?php
+           if (isset($_SESSION['admin_error'])) {
+             echo htmlspecialchars($_SESSION['admin_error']);
+             unset($_SESSION['admin_error']); // Clear error after displaying
+           }
+         ?>
+       </p>
+
+       <div class="links">
+         <a href="#">Forgot Password?</a>
+       </div>
+     </form>
+   </div>
+
 </div>
-
-<script>
-  document.getElementById("adminLoginForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById("adminUsername").value;
-    const password = document.getElementById("adminPassword").value;
-    const errorMessage = document.getElementById("adminErrorMessage");
-
-    // Retrieve stored admin credentials from localStorage
-    const storedAdmin = JSON.parse(localStorage.getItem("admin"));
-
-    if (storedAdmin && username === storedAdmin.username && password === storedAdmin.password) {
-      window.location.href = "homeadmin.html";
-    } else {
-      errorMessage.textContent = "Invalid credentials for Admin.";
-    }
-  });
-</script>
-
-<script>
-  document.getElementById("userLoginForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const username = document.getElementById("userUsername").value;
-    const password = document.getElementById("userPassword").value;
-    const errorMessage = document.getElementById("userErrorMessage");
-
-    // Retrieve stored user credentials from localStorage
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-
-    if (storedUser && username === storedUser.username && password === storedUser.password) {
-      window.location.href = "home.html";
-    } else {
-      errorMessage.textContent = "Invalid credentials for User.";
-    }
-  });
-</script>
-
-
 
 </body>
 </html>
