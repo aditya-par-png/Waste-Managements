@@ -1,11 +1,11 @@
 <?php
-session_start(); // Start the session to display error messages
+session_start(); // Start the session to display messages
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login - Waste Management</title>
   <style>
     body {
@@ -23,6 +23,7 @@ session_start(); // Start the session to display error messages
       max-width: 900px;
       display: flex;
       justify-content: space-between;
+      flex-wrap: wrap;
     }
     .login-section {
       width: 45%;
@@ -30,6 +31,7 @@ session_start(); // Start the session to display error messages
       background-color: #fff;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
     }
     .login-section h3 {
       text-align: center;
@@ -66,6 +68,13 @@ session_start(); // Start the session to display error messages
     .error {
       color: red;
       text-align: center;
+      margin-top: 10px;
+    }
+    .success {
+      color: green;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
     }
     .links {
       text-align: center;
@@ -83,21 +92,29 @@ session_start(); // Start the session to display error messages
 <body>
 
 <div class="container">
-  
+
+  <!-- Signup Success Message -->
+  <?php
+  if (isset($_SESSION['signup_success'])) {
+      echo '<div class="success">' . htmlspecialchars($_SESSION['signup_success']) . '</div>';
+      unset($_SESSION['signup_success']); // Clear message after displaying
+  }
+  ?>
+
   <!-- User Login Section -->
   <div class="login-section">
     <h3>User Login</h3>
-    <form action="login_process.php" method="POST">
+    <form action="login-process.php" method="POST">
       <div class="input-group">
         <label for="userUsername">Username or Email</label>
-        <input type="text" id="userUsername" name="userUsername" required>
+        <input type="text" id="userUsername" name="userUsername" required />
       </div>
       <div class="input-group">
         <label for="userPassword">Password</label>
-        <input type="password" id="userPassword" name="userPassword" required>
+        <input type="password" id="userPassword" name="userPassword" required />
       </div>
       <button type="submit" class="button" name="userLogin">Login as User</button>
-      
+
       <!-- Display User Login Error -->
       <p class="error">
         <?php
@@ -109,7 +126,7 @@ session_start(); // Start the session to display error messages
       </p>
 
       <div class="links">
-        <a href="user_signup.html">Create an Account</a> | <a href="#">Forgot Password?</a>
+        <a href="user_signup.php">Create an Account</a> | <a href="#">Forgot Password?</a>
       </div>
     </form>
   </div>
@@ -117,32 +134,32 @@ session_start(); // Start the session to display error messages
   <!-- Admin Login Section -->
   <div class="login-section">
     <h3>Admin Login</h3>
-    <form action="login_process.php" method="POST">
+    <form action="login-process.php" method="POST">
       <div class="input-group">
         <label for="adminUsername">Username or Email</label>
-        <input type="text" id="adminUsername" name="adminUsername" required>
+        <input type="text" id="adminUsername" name="adminUsername" required />
       </div>
       <div class="input-group">
         <label for="adminPassword">Password</label>
-        <input type="password" id="adminPassword" name="adminPassword" required>
+        <input type="password" id="adminPassword" name="adminPassword" required />
       </div>
       <button type="submit" class="button" name="adminLogin">Login as Admin</button>
 
-       <!-- Display Admin Login Error -->
-       <p class="error">
-         <?php
-           if (isset($_SESSION['admin_error'])) {
-             echo htmlspecialchars($_SESSION['admin_error']);
-             unset($_SESSION['admin_error']); // Clear error after displaying
-           }
-         ?>
-       </p>
+      <!-- Display Admin Login Error -->
+      <p class="error">
+        <?php
+          if (isset($_SESSION['admin_error'])) {
+            echo htmlspecialchars($_SESSION['admin_error']);
+            unset($_SESSION['admin_error']); // Clear error after displaying
+          }
+        ?>
+      </p>
 
-       <div class="links">
-         <a href="#">Forgot Password?</a>
-       </div>
-     </form>
-   </div>
+      <div class="links">
+        <a href="admin_signup.php">Create an Account</a> | <a href="#">Forgot Password?</a>
+      </div>
+    </form>
+  </div>
 
 </div>
 
