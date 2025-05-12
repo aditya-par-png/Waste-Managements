@@ -1,85 +1,116 @@
-<?php
-session_start();
-
-// Redirect to login if admin is not logged in
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: admin_login.php");
-    exit();
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin Home - Waste Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - JeevanSafa</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
       display: flex;
-      margin: 0;
-      height: 100vh;
+      min-height: 100vh;
+      background-color: #eef5f1;
+      font-family: Arial, sans-serif;
     }
     .sidebar {
-      width: 200px;
-      background-color: #333;
+      width: 240px;
+      background-color: #2e7d32;
       padding: 20px;
       color: white;
-      height: 100vh;
-      box-sizing: border-box;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
     }
     .sidebar a {
       display: block;
       color: white;
       text-decoration: none;
-      padding: 10px;
+      padding: 12px 15px;
+      border-radius: 5px;
       margin-bottom: 10px;
-      border-radius: 4px;
+      transition: background 0.3s;
     }
     .sidebar a:hover {
-      background-color: #45a049;
+      background-color: #1b5e20;
     }
-    .content {
-      flex-grow: 1;
-      padding: 20px;
-      overflow-y: auto;
-      box-sizing: border-box;
+    .main-content {
+      flex: 1;
+      padding: 40px;
     }
-    .container {
-      max-width: 900px;
-      margin: auto;
+    .dashboard-header {
+      margin-bottom: 30px;
+    }
+    .dashboard-header h1 {
+      color: #2e7d32;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background-color: white;
       padding: 20px;
-      background-color: #fff;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
-    a.logout {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 15px;
-      background-color: #f44336;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
+    .card h3 {
+      color: #333;
     }
-    a.logout:hover {
-      background-color: #d32f2f;
+    .card p {
+      color: #666;
     }
   </style>
+  <script>
+    function loadDashboardStats() {
+      const requests = JSON.parse(localStorage.getItem("scheduleList")) || [];
+      const assigned = requests.filter(r => r.status === "Assigned");
+      const pending = requests.filter(r => r.status !== "Assigned");
+
+      document.getElementById("todays-pickups").textContent = `${assigned.length} pickups assigned`;
+      document.getElementById("pending-requests").textContent = `${pending.length} requests pending`;
+      document.getElementById("truck-status").textContent = `Trucks assigned: ${[...new Set(assigned.map(r => r.vehicle))].length}`;
+      document.getElementById("system-logs").textContent = `${requests.length} total schedule entries.`;
+    }
+
+    document.addEventListener("DOMContentLoaded", loadDashboardStats);
+  </script>
 </head>
 <body>
+
   <div class="sidebar">
-    <h3>Admin Panel</h3>
-    <a href="homeadmin.php">Home</a>
-    <a href="manage-schedule.html">Manage Schedules</a>
+    <h2>Admin Panel</h2>
+    <a href="homeadmin.php">🏠 Dashboard</a>
+    <a href="manage-schedule.php">📅 Manage Schedules</a>
+    <a href="track-trucks.php">🚛 Track Trucks</a>
+    <a href="reports.php">📊 Reports</a>
+    <a href="home.php">🔓 Logout</a>
   </div>
-  <div class="content">
-    <div class="container">
-      <h3>Welcome to the Admin Dashboard, <?php echo htmlspecialchars($_SESSION['admin_name']); ?>!</h3>
-      <p>Manage waste collection schedules, track trucks.</p>
-      <a href="logout.php" class="logout">Logout</a>
+
+  <div class="main-content">
+    <div class="dashboard-header">
+      <h1>Welcome, Admin</h1>
+      <p>Monitor today's activity and manage operations.</p>
+    </div>
+    <div class="dashboard-grid">
+      <div class="card">
+        <h3>Today's Pickups</h3>
+        <p id="todays-pickups">Loading...</p>
+      </div>
+      <div class="card">
+        <h3>Truck Status</h3>
+        <p id="truck-status">Loading...</p>
+      </div>
+      <div class="card">
+        <h3>Pending Requests</h3>
+        <p id="pending-requests">Loading...</p>
+      </div>
+      <div class="card">
+        <h3>System Logs</h3>
+        <p id="system-logs">Loading...</p>
+      </div>
     </div>
   </div>
+
 </body>
 </html>
