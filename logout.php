@@ -17,6 +17,10 @@ if (ini_get("session.use_cookies")) {
 session_destroy();
 
 // Redirect to login or homepage
+<<<<<<< HEAD
 header("Location: home.php"); // or login.php
+=======
+header("Location: index.html"); // or login.php
+>>>>>>> c2e25da (Initial commit: add all project files)
 exit();
 ?>
